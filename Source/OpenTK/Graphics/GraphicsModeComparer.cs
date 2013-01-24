@@ -55,7 +55,10 @@ namespace OpenTK.Graphics
             result = x.Buffers.CompareTo(y.Buffers);
             if (result != 0)
                 return result;
-            return x.AccumulatorFormat.CompareTo(y.AccumulatorFormat);
+            result = x.AccumulatorFormat.CompareTo(y.AccumulatorFormat);
+            if (result != 0)
+                return result;
+            return ((int)(x.Index)).CompareTo((int)(y.Index));
         }
 
         #endregion
