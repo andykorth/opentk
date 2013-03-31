@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup Condition="'$(Configuration)' == 'Documentation'">
     <OutputPath>.\opentk\</OutputPath>
@@ -14,7 +14,7 @@
   </PropertyGroup>
   <PropertyGroup>
     <ProjectGuid>{ADC34399-7613-44D2-90B2-19250F06FE7B}</ProjectGuid>
-    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <InputPath>..\..\</InputPath>
     <OutputPath>.\opentk\</OutputPath>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -23,6 +23,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <OutputType>Exe</OutputType>
     <AssemblyName>Build.Installer.Zip</AssemblyName>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Documentation|AnyCPU' ">
     <DebugType>none</DebugType>
@@ -48,20 +49,23 @@
     <OutputPath>opentk\</OutputPath>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+  </ItemGroup>
   <Target Name="Build">
     <CallTarget Targets="CleanTreeCopy" />
     <!-- Make a clean copy of the source tree -->
     <CreateItem Include="$(InputPath)**\*.*" Exclude="$(InputPath)**\.svn\**\*.*;&#xD;&#xA;                 $(InputPath)**\obj\**\*.*;&#xD;&#xA;                 $(InputPath)Installers\Zip\opentk\**\*.*;&#xD;&#xA;                 $(InputPath)Documentation\Source\**\*.*;&#xD;&#xA;		 $(InputPath)Automation\**\*.*;&#xD;&#xA;		 $(InputPath)Old\**\*.*;&#xD;&#xA;                 $(InputPath)**\OpenTK*.xml;&#xD;&#xA;                 $(InputPath)**\*.suo;&#xD;&#xA;                 $(InputPath)**\*.pidb;&#xD;&#xA;                 $(InputPath)**\*.userprefs;&#xD;&#xA;                 $(InputPath)**\opentk*.zip;&#xD;&#xA;                 $(InputPath)**\opentk*.exe;&#xD;&#xA;                 $(InputPath)**\vshost*.exe;&#xD;&#xA;                 ">
       <Output TaskParameter="Include" ItemName="FileList" />
     </CreateItem>
-    <Copy SourceFiles="@(FileList)" DestinationFiles="@(FileList-&gt;'$(OutputPath)%(RecursiveDir)%(Filename)%(Extension)')" />
+    <Copy SourceFiles="@(FileList)" DestinationFiles="@(FileList->'$(OutputPath)%(RecursiveDir)%(Filename)%(Extension)')" />
     <!-- Zip the copy of the source tree -->
     <Exec Command="7z a -tzip opentk.zip $(OutputPath)" />
     <!-- Copy the zip file to the root directory and add a date stamp -->
     <ReadLinesFromFile File="../../Version.txt">
       <Output TaskParameter="Lines" ItemName="Version" />
     </ReadLinesFromFile>
-    <Copy SourceFiles=".\opentk.zip" DestinationFiles="@(Version-&gt;'..\..\opentk-%(Identity).zip')" />
+    <Copy SourceFiles=".\opentk.zip" DestinationFiles="@(Version->'..\..\opentk-%(Identity).zip')" />
   </Target>
   <Target Name="Clean">
     <CreateItem Include=".\opentk.zip;..\..\opentk-*.zip">
