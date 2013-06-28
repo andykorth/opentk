@@ -1369,6 +1369,32 @@ namespace OpenTK
         }
 
         /// <summary>
+        /// Multiplies an instance by a matrix.
+        /// </summary>
+        /// <param name="scale">The scalar.</param>
+        /// <param name="vec">The matrix.</param>
+        /// <returns>The result of the calculation.</returns>
+        public static Vector3d operator *(Vector3d vec, Matrix4d mat)
+        {
+            Vector3d result;
+            Vector3d.Transform(ref vec, ref mat, out result);
+            return result;
+        }
+
+        /// <summary>
+        /// Multiplies an instance by a matrix.
+        /// </summary>
+        /// <param name="vec">The matrix.</param>
+        /// <param name="scale">The scalar.</param>
+        /// <returns>The result of the calculation.</returns>
+        public static Vector3d operator *(Matrix4d mat, Vector3d vec)
+        {
+            Vector3d result;
+            Vector3d.Transform(ref vec, ref mat, out result);
+            return result;
+        }
+
+        /// <summary>
         /// Divides an instance by a scalar.
         /// </summary>
         /// <param name="vec">The instance.</param>
