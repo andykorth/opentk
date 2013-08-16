@@ -57,7 +57,7 @@
     <RegisterForComInterop>False</RegisterForComInterop>
     <RemoveIntegerChecks>False</RemoveIntegerChecks>
     <WarningLevel>4</WarningLevel>
-    <NoWarn>0219, 0414, 0612, 0618, 1591, 3005, 3006</NoWarn>
+    <NoWarn>0219,0414,0612,0618,1591,3005,3006</NoWarn>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
     <DebugType>full</DebugType>
   </PropertyGroup>
@@ -75,7 +75,7 @@
     <RegisterForComInterop>False</RegisterForComInterop>
     <RemoveIntegerChecks>False</RemoveIntegerChecks>
     <WarningLevel>4</WarningLevel>
-    <NoWarn>0219, 0414, 0612, 0618, 1591, 3005, 3006</NoWarn>
+    <NoWarn>0219,0414,0612,0618,1591,3005,3006</NoWarn>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
     <DebugType>none</DebugType>
   </PropertyGroup>
@@ -83,7 +83,7 @@
     <OutputPath>..\..\Binaries\OpenTK\Release\</OutputPath>
     <DebugType>none</DebugType>
     <WarningLevel>4</WarningLevel>
-    <NoWarn>0219, 0414, 0612, 0618, 1591, 3005, 3006</NoWarn>
+    <NoWarn>0219,0414,0612,0618,1591,3005,3006</NoWarn>
     <Optimize>True</Optimize>
     <DefineConstants>TRACE;</DefineConstants>
   </PropertyGroup>
@@ -101,7 +101,7 @@
     <RegisterForComInterop>False</RegisterForComInterop>
     <RemoveIntegerChecks>False</RemoveIntegerChecks>
     <WarningLevel>4</WarningLevel>
-    <NoWarn>0219, 0414, 0612, 0618, 1591, 3005, 3006</NoWarn>
+    <NoWarn>0219,0414,0612,0618,1591,3005,3006</NoWarn>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
     <DebugType>none</DebugType>
   </PropertyGroup>
