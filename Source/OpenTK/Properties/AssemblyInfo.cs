@@ -14,6 +14,5 @@ using System.Runtime.InteropServices;
 
 [assembly: CLSCompliant(true)]
 [assembly: System.Security.AllowPartiallyTrustedCallers]
-#if NET40
-[assembly: System.Security.SecurityRules(System.Security.SecurityRuleSet.Level1)]
-#endif
+[assembly: System.Security.SecurityRules(System.Security.SecurityRuleSet.Level1)] 
+
