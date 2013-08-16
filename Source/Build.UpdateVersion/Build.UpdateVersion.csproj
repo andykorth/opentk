@@ -45,7 +45,6 @@
     </PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Documentation|AnyCPU' ">
-    <DebugSymbols>False</DebugSymbols>
     <DefineConstants>TRACE;</DefineConstants>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -53,14 +52,22 @@
     <DebugSymbols>True</DebugSymbols>
     <DebugType>full</DebugType>
     <WarningLevel>4</WarningLevel>
+    <CustomCommands>
+      <CustomCommands>
+        <Command type="AfterBuild" command="obj/Debug/Build.UpdateVersion.exe" />
+      </CustomCommands>
+    </CustomCommands>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugSymbols>False</DebugSymbols>
     <DefineConstants>TRACE;</DefineConstants>
     <WarningLevel>4</WarningLevel>
+    <CustomCommands>
+      <CustomCommands>
+        <Command type="AfterBuild" command="obj/Release/Build.UpdateVersion.exe" />
+      </CustomCommands>
+    </CustomCommands>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Nsis|AnyCPU' ">
-    <DebugSymbols>False</DebugSymbols>
     <DefineConstants>TRACE;</DefineConstants>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
