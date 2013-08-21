@@ -3531,33 +3531,51 @@ namespace OpenTK.Platform.Windows
     #region MouseKeys
 
     /// <summary>
-    /// Enumerates available mouse keys (suitable for use in WM_MOUSEMOVE messages).
+    /// Enumerates flag bits for which mouse-buttons are held down during WM_MOUSEMOVE, WM_XBUTTONDOWN, and others..
     /// </summary>
+    [Flags]
     enum MouseKeys
     {
         // Summary:
-        //     No mouse button was pressed.
+        //     No mouse button is held.
         None = 0,
         //
         // Summary:
-        //     The left mouse button was pressed.
+        //     The left mouse button is held.
         Left = 0x0001,
         //
         // Summary:
-        //     The right mouse button was pressed.
+        //     The right mouse button is held.
         Right = 0x0002,
         //
         // Summary:
-        //     The middle mouse button was pressed.
+        //     The middle mouse button is held.
         Middle = 0x0010,
         //
         // Summary:
-        //     The first XButton was pressed.
+        //     The first XButton is held. 
         XButton1 = 0x0020,
         //
         // Summary:
-        //     The second XButton was pressed.
+        //     The second XButton is held.
         XButton2 = 0x0040,
+    }
+
+    #endregion
+
+    #region MouseXButtonHIWORD 
+
+    /// <summary>
+    /// Paramaters sent in wParam HIWORD of WM_XBUTTONDOWN, WM_XBUTTONUP
+    /// 
+    /// See:
+    ///    http://msdn.microsoft.com/en-us/library/windows/desktop/ms646245(v=vs.85).aspx
+    /// </summary>
+
+    enum MouseXButtonHIWORD 
+    {
+        XButton1 = 1,
+        XButton2 = 2,
     }
 
     #endregion
