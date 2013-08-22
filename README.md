@@ -10,7 +10,9 @@ This fork was created from the latest official SVN repository. It contains numer
 Documentation
 =============
 
-The best source of documentation is the [OpenTK Manual](http://www.opentk.com/doc) or our github [OpenTK Wiki](https://github.com/jeske/opentk/wiki/..-OpenTKR-Wiki)
+* [OpenTK Manual](http://www.opentk.com/doc) 
+* [OpenTK Doxygen API Reference](http://jeske.github.io/opentkr-doxygen/html/index.html)
+* github [OpenTK Wiki](https://github.com/jeske/opentk/wiki/..-OpenTKR-Wiki)
 
 Community
 =========
