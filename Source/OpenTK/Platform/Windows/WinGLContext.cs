@@ -53,18 +53,25 @@ namespace OpenTK.Platform.Windows
             {
                 if (window == null)
                     throw new ArgumentNullException("window", "Must point to a valid window.");
-                if (window.WindowHandle == IntPtr.Zero)
+                if (window.Handle == IntPtr.Zero)
                     throw new ArgumentException("window", "Must be a valid window.");
 
                 Mode = format;
 
-                Debug.Print("OpenGL will be bound to window:{0} on thread:{1}", window.WindowHandle,
+                Debug.Print("OpenGL will be bound to window:{0} on thread:{1}", window.Handle,
                     System.Threading.Thread.CurrentThread.ManagedThreadId);
-                this.SetGraphicsModePFD(format, (WinWindowInfo)window);
+                SetGraphicsModePFD(format, (WinWindowInfo)window);
 
                 lock (LoadLock)
                 {
-                    if (!wgl_loaded)
+                    // On intel drivers, wgl entry points appear to change
+                    // when creating multiple contexts. As a workaround,
+                    // we reload Wgl entry points every time we create a
+                    // new context - this solves the issue without any apparent
+                    // side-effects (i.e. the old contexts can still be handled
+                    // using the new entry points.)
+                    // Sigh...
+                   // if (!wgl_loaded)
                     {
                         // We need to create a temp context in order to load wgl extensions (e.g. for multisampling or GL3).
                         // We cannot rely on OpenTK.Platform.Wgl until we create the context and call Wgl.LoadAll().
@@ -176,7 +183,7 @@ namespace OpenTK.Platform.Windows
 
                 if (window != null)
                 {
-                    if (((WinWindowInfo)window).WindowHandle == IntPtr.Zero)
+                    if (((WinWindowInfo)window).Handle == IntPtr.Zero)
                         throw new ArgumentException("window", "Must point to a valid window.");
 
                     success = Wgl.Imports.MakeCurrent(((WinWindowInfo)window).DeviceContext, Handle.Handle);
@@ -269,12 +276,12 @@ namespace OpenTK.Platform.Windows
 
         #endregion
 
-        #region Private Methods
+        #region Internal Methods
 
         #region SetGraphicsModePFD
 
         // Note: there is no relevant ARB function.
-        void SetGraphicsModePFD(GraphicsMode mode, WinWindowInfo window)
+        internal static void SetGraphicsModePFD(GraphicsMode mode, WinWindowInfo window)
         {
             Debug.Write("Setting pixel format... ");
 
@@ -293,10 +300,6 @@ namespace OpenTK.Platform.Windows
         }
 
         #endregion
-
-        #endregion
-
-        #region Internal Methods
 
         #region internal IntPtr DeviceContext
 
