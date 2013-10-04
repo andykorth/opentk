@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <id>OpenTK</id>
+    <version>1.1.1161.61462</version>
+    <authors>OpenTK Team</authors>
+    <owners>OpenTK Team</owners>
+    <licenseUrl>http://www.opentk.com/project/license</licenseUrl>
+    <projectUrl>http://www.opentk.com</projectUrl>
+    <iconUrl>http://benjaminnitschke.com/OpenTK128x128.png</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>The Open Toolkit Library (OpenTK)</description>
+    <releaseNotes>Provides the OpenTK library for windows. Newest build 2013-07-28 based on https://github.com/andykorth/opentk Also used in the Delta Engine. If you need OpenAL functionality working out of the box checkout the OpenTKWithOpenAL package. For GLControl use the OpenTK.GLControl package.</releaseNotes>
+    <copyright>Copyright 2013</copyright>
+    <tags>OpenTK OpenAL OpenGL OpenCL</tags>
+  </metadata>
+</package>

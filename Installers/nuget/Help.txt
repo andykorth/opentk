@@ -1,0 +1,20 @@
+Set your API key:
+nuget.exe setApiKey XXXXXXXXXXXXXXXXXXX
+
+See help at: http://docs.nuget.org/docs/reference/nuspec-reference
+
+Build .nupkg:
+nuget.exe pack OpenTK.nuspec -BasePath OpenTK
+nuget.exe pack OpenTK.GLControl.nuspec -BasePath OpenTK.GLControl
+nuget.exe pack OpenTKWithOpenAL.nuspec -BasePath OpenTKWithOpenAL
+
+For testing use a local nuget feed:
+http://haacked.com/archive/2010/10/21/hosting-your-own-local-and-remote-nupack-feeds.aspx
+
+Native dependencies are not that easy, you need a script to modify the post build steps:
+http://stackoverflow.com/questions/9842528/nuget-powershell-how-to-add-native-dependencies-how-to-add-files-to-a-project
+
+And push it to nuget.org:
+nuget.exe push OpenTK.1.1.1161.61462.nupkg
+nuget.exe push OpenTK.GLControl.1.1.1161.61462.nupkg
+nuget.exe push OpenTKWithOpenAL.1.1.1161.61462.nupkg

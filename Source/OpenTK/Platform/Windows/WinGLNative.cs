@@ -355,14 +355,9 @@ namespace OpenTK.Platform.Windows
                     break;
 
                 case WindowMessage.XBUTTONDOWN:
-<<<<<<< HEAD
-                    Functions.SetCapture(window.WindowHandle);
-                    mouse[GET_XBUTTON_WPARAM(wParam.ToInt32())] = true;
-=======
                     Functions.SetCapture(window.Handle);
                     mouse[((wParam.ToInt32() & 0xFFFF0000) >> 16) !=
                         (int)MouseKeys.XButton1 ? MouseButton.Button1 : MouseButton.Button2] = true;
->>>>>>> a9e2a10d0e71be976a27b8f98bcdf2850219452c
                     break;
 
                 case WindowMessage.LBUTTONUP:
