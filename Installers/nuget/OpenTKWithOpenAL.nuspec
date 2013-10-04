@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <id>OpenTKWithOpenAL</id>
+    <version>1.1.1161.61462</version>
+    <authors>OpenTK Team</authors>
+    <owners>OpenTK Team</owners>
+    <licenseUrl>http://www.opentk.com/project/license</licenseUrl>
+    <projectUrl>http://en.wikipedia.org/wiki/OpenAL</projectUrl>
+    <iconUrl>http://benjaminnitschke.com/OpenAL128x128.png</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>The Open Toolkit Library (OpenTK) with OpenAL multimedia support</description>
+    <releaseNotes>Provides the OpenTK library for windows and adds the native OpenAL32.dll and wrap_oal.dll to make audio work. If you don't need OpenAL support just use the OpenTK package. Newest build 2013-07-28 based on https://github.com/andykorth/opentk</releaseNotes>
+    <copyright>Copyright 2013</copyright>
+    <tags>OpenTK OpenAL OpenGL music sound multimedia audio OpenAL32 wrap_oal native dll</tags>
+  </metadata>
+</package>

@@ -1,7 +1,7 @@
 OpenTK
 ======
 
-The Open Toolkit is an advanced, low-level C# library that wraps OpenGL, OpenCL and OpenAL. The OpenTK home is http://www.opentk.com/
+The Open Toolkit is an advanced, low-level C# library that wraps OpenGL, OpenCL and OpenAL. 
 
 This is an unofficial fork for community changes that we hope will someday make it into the official repository. Unfortunately, the only official maintainer of OpenTK has been missing since early 2012.
 
@@ -10,11 +10,14 @@ This fork was created from the latest official SVN repository. It contains numer
 Documentation
 =============
 
-The best source of documentation is the [OpenTK Manual](http://www.opentk.com/doc)
+* [OpenTK Manual](http://www.opentk.com/doc) 
+* [OpenTK Doxygen API Reference](http://jeske.github.io/opentkr-doxygen/html/index.html)
+* github [OpenTK Wiki](https://github.com/jeske/opentk/wiki/..-OpenTKR-Wiki)
 
-Need Help?
-==========
+Community
+=========
 
-Head over to the [OpenTK forums](http://www.opentk.com/forum). It's the best way to reach the community.
+Head over to the [OpenTK forums](http://www.opentk.com/forum) or the [OpenTKR mailing list](https://groups.google.com/group/opentkr-dev)
 
-OpenTK Version: 1.1.1160.61462 (build 2013-03-07), also available via nuget (OpenTK and OpenTKWithOpenAL) and used in the DeltaEngine.
+The original OpenTK home is http://www.opentk.com/
+

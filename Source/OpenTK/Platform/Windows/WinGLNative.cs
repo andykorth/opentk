@@ -152,6 +152,29 @@ namespace OpenTK.Platform.Windows
 
         #region WindowProcedure
 
+        /// <summary>
+        /// Decode the WM_XBUTTONDOWN, WM_XBUTTONUP paramaters.
+        /// 
+        /// See:
+        ///    http://msdn.microsoft.com/en-us/library/windows/desktop/ms646245(v=vs.85).aspx
+        /// </summary>
+        /// <param name="wParam"></param>
+        /// <returns></returns>
+        private static MouseButton GET_XBUTTON_WPARAM(Int32 wParam) {            
+            Int32 wParam_HIWORD = (wParam >> 16) & 0xFFFF;
+            switch ((MouseXButtonHIWORD)wParam_HIWORD) {
+                case MouseXButtonHIWORD.XButton1:
+                    return MouseButton.Button1;
+                case MouseXButtonHIWORD.XButton2:
+                    return MouseButton.Button2;
+                
+                // Only two buttons come through this API, so we should never see this
+                // Need to switch to DirectInput to get more buttons.
+                default:
+                    return MouseButton.Button3;
+            }
+        }
+
         IntPtr WindowProcedure(IntPtr handle, WindowMessage message, IntPtr wParam, IntPtr lParam)
         {
             switch (message)
@@ -354,8 +377,7 @@ namespace OpenTK.Platform.Windows
 
                 case WindowMessage.XBUTTONUP:
                     Functions.ReleaseCapture();
-                    mouse[((wParam.ToInt32() & 0xFFFF0000) >> 16) !=
-                        (int)MouseKeys.XButton1 ? MouseButton.Button1 : MouseButton.Button2] = false;
+                    mouse[GET_XBUTTON_WPARAM(wParam.ToInt32())] = false;
                     break;
 
                 // Keyboard events:
