@@ -27,6 +27,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 
 namespace OpenTK.Platform
@@ -37,6 +38,7 @@ namespace OpenTK.Platform
     {
         #region Fields
 
+        bool disposed;
         static IPlatformFactory default_implementation, embedded_implementation;
 
         #endregion
@@ -45,19 +47,27 @@ namespace OpenTK.Platform
 
         static Factory()
         {
-            if (Configuration.RunningOnWindows) Default = new Windows.WinFactory();
+            if (Configuration.Sdl2Supported) Default = new SDL2.Sdl2Factory();
+            else if (Configuration.RunningOnWindows) Default = new Windows.WinFactory();
             else if (Configuration.RunningOnMacOS) Default = new MacOS.MacOSFactory();
             else if (Configuration.RunningOnX11) Default = new X11.X11Factory();
             else Default = new UnsupportedPlatform();
 
-            if (Egl.Egl.IsSupported)
+            if (Configuration.Sdl2Supported)
+            {
+                Embedded = new Egl.EglSdl2PlatformFactory();
+            }
+            else if (Egl.Egl.IsSupported)
             {
                 if (Configuration.RunningOnWindows) Embedded = new Egl.EglWinPlatformFactory();
                 else if (Configuration.RunningOnMacOS) Embedded = new Egl.EglMacPlatformFactory();
                 else if (Configuration.RunningOnX11) Embedded = new Egl.EglX11PlatformFactory();
                 else Embedded = new UnsupportedPlatform();
             }
-            else Embedded = new UnsupportedPlatform();
+            else
+            {
+                Embedded = new UnsupportedPlatform();
+            }
 
             if (Default is UnsupportedPlatform && !(Embedded is UnsupportedPlatform))
                 Default = Embedded;
@@ -132,7 +142,8 @@ namespace OpenTK.Platform
         class UnsupportedPlatform : IPlatformFactory
         {
             #region Fields
-            
+
+            bool disposed;
             static readonly string error_string = "Please, refer to http://www.opentk.com for more information.";
             
             #endregion
@@ -190,6 +201,72 @@ namespace OpenTK.Platform
             }
 
             #endregion
+
+            #region IDisposable Members
+
+            void Dispose(bool manual)
+            {
+                if (!disposed)
+                {
+                    if (manual)
+                    {
+                        // nothing to do
+                    }
+                    else
+                    {
+                        Debug.Print("{0} leaked, did you forget to call Dispose()?", GetType());
+                    }
+                    disposed = true;
+                }
+            }
+
+            public void Dispose()
+            {
+                Dispose(true);
+                GC.SuppressFinalize(this);
+            }
+
+            ~UnsupportedPlatform()
+            {
+                Dispose(false);
+            }
+
+            #endregion
+        }
+
+        #endregion
+
+        #region IDisposable Members
+
+        void Dispose(bool manual)
+        {
+            if (!disposed)
+            {
+                if (manual)
+                {
+                    Default.Dispose();
+                    if (Embedded != Default)
+                    {
+                        Embedded.Dispose();
+                    }
+                }
+                else
+                {
+                    Debug.Print("{0} leaked, did you forget to call Dispose()?", GetType());
+                }
+                disposed = true;
+            }
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        ~Factory()
+        {
+            Dispose(false);
         }
 
         #endregion

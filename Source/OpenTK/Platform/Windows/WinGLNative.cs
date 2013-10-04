@@ -128,7 +128,7 @@ namespace OpenTK.Platform.Windows
                 window = new WinWindowInfo(
                     CreateWindow(x, y, width, height, title, options, device, IntPtr.Zero), null);
                 child_window = new WinWindowInfo(
-                    CreateWindow(0, 0, ClientSize.Width, ClientSize.Height, title, options, device, window.WindowHandle), window);
+                    CreateWindow(0, 0, ClientSize.Width, ClientSize.Height, title, options, device, window.Handle), window);
 
                 exists = true;
 
@@ -216,7 +216,7 @@ namespace OpenTK.Platform.Windows
                     unsafe
                     {
                         WindowPosition* pos = (WindowPosition*)lParam;
-                        if (window != null && pos->hwnd == window.WindowHandle)
+                        if (window != null && pos->hwnd == window.Handle)
                         {
                             Point new_location = new Point(pos->x, pos->y);
                             if (Location != new_location)
@@ -235,7 +235,7 @@ namespace OpenTK.Platform.Windows
                                 Functions.GetClientRect(handle, out rect);
                                 client_rectangle = rect.ToRectangle();
 
-                                Functions.SetWindowPos(child_window.WindowHandle, IntPtr.Zero, 0, 0, ClientRectangle.Width, ClientRectangle.Height,
+                                Functions.SetWindowPos(child_window.Handle, IntPtr.Zero, 0, 0, ClientRectangle.Width, ClientRectangle.Height,
                                     SetWindowPosFlags.NOZORDER | SetWindowPosFlags.NOOWNERZORDER |
                                     SetWindowPosFlags.NOACTIVATE | SetWindowPosFlags.NOSENDCHANGING);
 
@@ -340,23 +340,29 @@ namespace OpenTK.Platform.Windows
                     break;
 
                 case WindowMessage.LBUTTONDOWN:
-                    Functions.SetCapture(window.WindowHandle);
+                    Functions.SetCapture(window.Handle);
                     mouse[MouseButton.Left] = true;
                     break;
 
                 case WindowMessage.MBUTTONDOWN:
-                    Functions.SetCapture(window.WindowHandle);
+                    Functions.SetCapture(window.Handle);
                     mouse[MouseButton.Middle] = true;
                     break;
 
                 case WindowMessage.RBUTTONDOWN:
-                    Functions.SetCapture(window.WindowHandle);
+                    Functions.SetCapture(window.Handle);
                     mouse[MouseButton.Right] = true;
                     break;
 
                 case WindowMessage.XBUTTONDOWN:
+<<<<<<< HEAD
                     Functions.SetCapture(window.WindowHandle);
                     mouse[GET_XBUTTON_WPARAM(wParam.ToInt32())] = true;
+=======
+                    Functions.SetCapture(window.Handle);
+                    mouse[((wParam.ToInt32() & 0xFFFF0000) >> 16) !=
+                        (int)MouseKeys.XButton1 ? MouseButton.Button1 : MouseButton.Button2] = true;
+>>>>>>> a9e2a10d0e71be976a27b8f98bcdf2850219452c
                     break;
 
                 case WindowMessage.LBUTTONUP:
@@ -518,7 +524,7 @@ namespace OpenTK.Platform.Windows
         {
             TrackMouseEventStructure me = new TrackMouseEventStructure();
             me.Size = TrackMouseEventStructure.SizeInBytes;
-            me.TrackWindowHandle = child_window.WindowHandle;
+            me.TrackWindowHandle = child_window.Handle;
             me.Flags = TrackMouseEventFlags.LEAVE;
 
             if (!Functions.TrackMouseEvent(ref me))
@@ -557,7 +563,7 @@ namespace OpenTK.Platform.Windows
             get
             {
                 MSG message = new MSG();
-                return !Functions.PeekMessage(ref message, window.WindowHandle, 0, 0, 0);
+                return !Functions.PeekMessage(ref message, window.Handle, 0, 0, 0);
             }
         }
 
@@ -636,7 +642,7 @@ namespace OpenTK.Platform.Windows
             if (Exists)
             {
                 Debug.Print("Destroying window: {0}", window.ToString());
-                Functions.DestroyWindow(window.WindowHandle);
+                Functions.DestroyWindow(window.Handle);
                 exists = false;
             }
         }
@@ -703,7 +709,7 @@ namespace OpenTK.Platform.Windows
             set
             {
                 // Note: the bounds variable is updated when the resize/move message arrives.
-                Functions.SetWindowPos(window.WindowHandle, IntPtr.Zero, value.X, value.Y, value.Width, value.Height, 0);
+                Functions.SetWindowPos(window.Handle, IntPtr.Zero, value.X, value.Y, value.Width, value.Height, 0);
             }
         }
 
@@ -717,7 +723,7 @@ namespace OpenTK.Platform.Windows
             set
             {
                 // Note: the bounds variable is updated when the resize/move message arrives.
-                Functions.SetWindowPos(window.WindowHandle, IntPtr.Zero, value.X, value.Y, 0, 0, SetWindowPosFlags.NOSIZE);
+                Functions.SetWindowPos(window.Handle, IntPtr.Zero, value.X, value.Y, 0, 0, SetWindowPosFlags.NOSIZE);
             }
         }
 
@@ -731,7 +737,7 @@ namespace OpenTK.Platform.Windows
             set
             {
                 // Note: the bounds variable is updated when the resize/move message arrives.
-                Functions.SetWindowPos(window.WindowHandle, IntPtr.Zero, 0, 0, value.Width, value.Height, SetWindowPosFlags.NOMOVE);
+                Functions.SetWindowPos(window.Handle, IntPtr.Zero, 0, 0, value.Width, value.Height, SetWindowPosFlags.NOMOVE);
             }
         }
 
@@ -751,7 +757,7 @@ namespace OpenTK.Platform.Windows
             }
             set
             {
-                WindowStyle style = (WindowStyle)Functions.GetWindowLong(window.WindowHandle, GetWindowLongOffsets.STYLE);
+                WindowStyle style = (WindowStyle)Functions.GetWindowLong(window.Handle, GetWindowLongOffsets.STYLE);
                 Win32Rectangle rect = Win32Rectangle.From(value);
                 Functions.AdjustWindowRect(ref rect, style, false);
                 Location = new Point(rect.left, rect.top);
@@ -771,7 +777,7 @@ namespace OpenTK.Platform.Windows
             }
             set
             {
-                WindowStyle style = (WindowStyle)Functions.GetWindowLong(window.WindowHandle, GetWindowLongOffsets.STYLE);
+                WindowStyle style = (WindowStyle)Functions.GetWindowLong(window.Handle, GetWindowLongOffsets.STYLE);
                 Win32Rectangle rect = Win32Rectangle.From(value);
                 Functions.AdjustWindowRect(ref rect, style, false);
                 Size = new Size(rect.Width, rect.Height);
@@ -833,10 +839,10 @@ namespace OpenTK.Platform.Windows
                 if (value != icon)
                 {
                     icon = value;
-                    if (window.WindowHandle != IntPtr.Zero)
+                    if (window.Handle != IntPtr.Zero)
                     {
-                        Functions.SendMessage(window.WindowHandle, WindowMessage.SETICON, (IntPtr)0, icon == null ? IntPtr.Zero : value.Handle);
-                        Functions.SendMessage(window.WindowHandle, WindowMessage.SETICON, (IntPtr)1, icon == null ? IntPtr.Zero : value.Handle);
+                        Functions.SendMessage(window.Handle, WindowMessage.SETICON, (IntPtr)0, icon == null ? IntPtr.Zero : value.Handle);
+                        Functions.SendMessage(window.Handle, WindowMessage.SETICON, (IntPtr)1, icon == null ? IntPtr.Zero : value.Handle);
                     }
                     IconChanged(this, EventArgs.Empty);
                 }
@@ -862,16 +868,16 @@ namespace OpenTK.Platform.Windows
             get
             {
                 sb_title.Remove(0, sb_title.Length);
-                if (Functions.GetWindowText(window.WindowHandle, sb_title, sb_title.Capacity) == 0)
-                    Debug.Print("Failed to retrieve window title (window:{0}, reason:{1}).", window.WindowHandle, Marshal.GetLastWin32Error());
+                if (Functions.GetWindowText(window.Handle, sb_title, sb_title.Capacity) == 0)
+                    Debug.Print("Failed to retrieve window title (window:{0}, reason:{1}).", window.Handle, Marshal.GetLastWin32Error());
                 return sb_title.ToString();
             }
             set
             {
                 if (Title != value)
                 {
-                    if (!Functions.SetWindowText(window.WindowHandle, value))
-                        Debug.Print("Failed to change window title (window:{0}, new title:{1}, reason:{2}).", window.WindowHandle, value, Marshal.GetLastWin32Error());
+                    if (!Functions.SetWindowText(window.Handle, value))
+                        Debug.Print("Failed to change window title (window:{0}, new title:{1}, reason:{2}).", window.Handle, value, Marshal.GetLastWin32Error());
                     TitleChanged(this, EventArgs.Empty);
                 }
             }
@@ -885,7 +891,7 @@ namespace OpenTK.Platform.Windows
         {
             get
             {
-                return Functions.IsWindowVisible(window.WindowHandle);
+                return Functions.IsWindowVisible(window.Handle);
             }
             set
             {
@@ -893,16 +899,16 @@ namespace OpenTK.Platform.Windows
                 {
                     if (value)
                     {
-                        Functions.ShowWindow(window.WindowHandle, ShowWindowCommand.SHOW);
+                        Functions.ShowWindow(window.Handle, ShowWindowCommand.SHOW);
                         if (invisible_since_creation)
                         {
-                            Functions.BringWindowToTop(window.WindowHandle);
-                            Functions.SetForegroundWindow(window.WindowHandle);
+                            Functions.BringWindowToTop(window.Handle);
+                            Functions.SetForegroundWindow(window.Handle);
                         }
                     }
                     else if (!value)
                     {
-                        Functions.ShowWindow(window.WindowHandle, ShowWindowCommand.HIDE);
+                        Functions.ShowWindow(window.Handle, ShowWindowCommand.HIDE);
                     }
 
                     VisibleChanged(this, EventArgs.Empty);
@@ -954,7 +960,7 @@ namespace OpenTK.Platform.Windows
 
         public void Close()
         {
-            Functions.PostMessage(window.WindowHandle, WindowMessage.CLOSE, IntPtr.Zero, IntPtr.Zero);
+            Functions.PostMessage(window.Handle, WindowMessage.CLOSE, IntPtr.Zero, IntPtr.Zero);
         }
 
         #endregion
@@ -996,7 +1002,7 @@ namespace OpenTK.Platform.Windows
 
                         if (WindowBorder == WindowBorder.Hidden)
                         {
-                            IntPtr current_monitor = Functions.MonitorFromWindow(window.WindowHandle, MonitorFrom.Nearest);
+                            IntPtr current_monitor = Functions.MonitorFromWindow(window.Handle, MonitorFrom.Nearest);
                             MonitorInfo info = new MonitorInfo();
                             info.Size = MonitorInfo.SizeInBytes;
                             Functions.GetMonitorInfo(current_monitor, ref info);
@@ -1028,13 +1034,13 @@ namespace OpenTK.Platform.Windows
                         HideBorder();
                         command = ShowWindowCommand.MAXIMIZE;
 
-                        Functions.SetForegroundWindow(window.WindowHandle);
+                        Functions.SetForegroundWindow(window.Handle);
 
                         break;
                 }
 
                 if (command != 0)
-                    Functions.ShowWindow(window.WindowHandle, command);
+                    Functions.ShowWindow(window.Handle, command);
 
                 // Restore previous window border or apply pending border change when leaving fullscreen mode.
                 if (exiting_fullscreen)
@@ -1111,8 +1117,8 @@ namespace OpenTK.Platform.Windows
                 if (was_visible)
                     Visible = false;
 
-                Functions.SetWindowLong(window.WindowHandle, GetWindowLongOffsets.STYLE, (IntPtr)(int)style);
-                Functions.SetWindowPos(window.WindowHandle, IntPtr.Zero, 0, 0, rect.Width, rect.Height,
+                Functions.SetWindowLong(window.Handle, GetWindowLongOffsets.STYLE, (IntPtr)(int)style);
+                Functions.SetWindowPos(window.Handle, IntPtr.Zero, 0, 0, rect.Width, rect.Height,
                     SetWindowPosFlags.NOMOVE | SetWindowPosFlags.NOZORDER |
                     SetWindowPosFlags.FRAMECHANGED);
 
@@ -1134,7 +1140,7 @@ namespace OpenTK.Platform.Windows
 
         public Point PointToClient(Point point)
         {
-            if (!Functions.ScreenToClient(window.WindowHandle, ref point))
+            if (!Functions.ScreenToClient(window.Handle, ref point))
                 throw new InvalidOperationException(String.Format(
                     "Could not convert point {0} from screen to client coordinates. Windows error: {1}",
                     point.ToString(), Marshal.GetLastWin32Error()));
@@ -1148,7 +1154,7 @@ namespace OpenTK.Platform.Windows
 
         public Point PointToScreen(Point point)
         {
-            if (!Functions.ClientToScreen(window.WindowHandle, ref point))
+            if (!Functions.ClientToScreen(window.Handle, ref point))
                 throw new InvalidOperationException(String.Format(
                     "Could not convert point {0} from screen to client coordinates. Windows error: {1}",
                     point.ToString(), Marshal.GetLastWin32Error()));
@@ -1191,7 +1197,7 @@ namespace OpenTK.Platform.Windows
         {
             while (!IsIdle)
             {
-                ret = Functions.GetMessage(ref msg, window.WindowHandle, 0, 0);
+                ret = Functions.GetMessage(ref msg, window.Handle, 0, 0);
                 if (ret == -1)
                 {
                     throw new PlatformException(String.Format(

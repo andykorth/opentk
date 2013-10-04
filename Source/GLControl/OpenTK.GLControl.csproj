@@ -145,6 +145,7 @@
     <Compile Include="GLControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="Sdl2GLControl.cs" />
     <Compile Include="WinGLControl.cs">
       <SubType>Code</SubType>
     </Compile>

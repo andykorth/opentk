@@ -27,6 +27,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 
 namespace OpenTK.Platform.Windows
@@ -36,8 +37,20 @@ namespace OpenTK.Platform.Windows
 
     class WinFactory : IPlatformFactory 
     {
+        bool disposed;
         readonly object SyncRoot = new object();
         IInputDriver2 inputDriver;
+
+        public WinFactory()
+        {
+            if (System.Environment.OSVersion.Version.Major >= 6)
+            {
+                // Enable high-dpi support
+                // Only available on Windows Vista and higher
+                bool result = Functions.SetProcessDPIAware();
+                Debug.Print("SetProcessDPIAware() returned {0}", result);
+            }
+        }
 
         #region IPlatformFactory Members
 
@@ -111,5 +124,36 @@ namespace OpenTK.Platform.Windows
                 }
             }
         }
+
+        #region IDisposable Members
+
+        void Dispose(bool manual)
+        {
+            if (!disposed)
+            {
+                if (manual)
+                {
+                    InputDriver.Dispose();
+                }
+                else
+                {
+                    Debug.Print("{0} leaked, did you forget to call Dispose()?", GetType());
+                }
+                disposed = true;
+            }
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        ~WinFactory()
+        {
+            Dispose(false);
+        }
+
+        #endregion
     }
 }

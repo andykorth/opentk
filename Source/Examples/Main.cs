@@ -27,55 +27,84 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Drawing;
+using System.IO;
+using System.Reflection;
 using System.Text;
 using System.Windows.Forms;
-using System.Diagnostics;
-using System.IO;
-using System.Drawing;
 
 namespace Examples
 {
     static class Program
     {
-        [STAThread]
-        public static void Main()
+        static void LaunchExample(string type)
         {
-            try
-            {   
-                // This seems to be useful enough to leave in for a while.
-                TextWriterTraceListener console = new TextWriterTraceListener(System.Console.Out);
-                Trace.Listeners.Add (console);
-
-                Application.EnableVisualStyles();
-                Application.SetCompatibleTextRenderingDefault(false);
-
-                // The ExampleBrowser works pretty poorly on some platforms, so you may want to start examples directly. 
-                // for example: Examples.Tutorial.T12_GLSL_Parallax.Main ();
-                //  Examples.Tutorial.T10_GLSL_Cube.Main ();
-                Examples.Tests.BasicMouseInput.Main ();
-
-                using (Form browser = new ExampleBrowser())
-                {
-                    try
-                    {
-                        if (File.Exists("debug.log"))
-                            File.Delete("debug.log");
-                        if (File.Exists("trace.log"))
-                            File.Delete("trace.log");
-                    }
-                    catch (Exception expt)
-                    {
-                        MessageBox.Show("Could not access debug.log", expt.ToString());
-                    }
-
-                    Application.Run(browser);
-                }
-            }
-            catch (System.Security.SecurityException e)
+            using (TextWriterTraceListener dbg = new TextWriterTraceListener("debug.log"))
+            using (OpenTK.Toolkit.Init())
             {
-                MessageBox.Show("The Example Launcher failed to start, due to insufficient permissions. This may happen if you execute the application from a network share.", "OpenTK Example Launcher failed to start.",
-                                MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                Trace.WriteLine(e.ToString());
+                Trace.Listeners.Add(dbg);
+                Trace.Listeners.Add(new ConsoleTraceListener());
+
+                try
+                {
+                    if (File.Exists("debug.log"))
+                        File.Delete("debug.log");
+                    if (File.Exists("trace.log"))
+                        File.Delete("trace.log");
+                }
+                catch (Exception e)
+                {
+                    Trace.WriteLine(String.Format("Could not access debug.log", e.ToString()));
+                }
+
+                try
+                {
+                    var example = Type.GetType(type);
+                    if (example != null)
+                    {
+                        example.InvokeMember("Main",
+                            BindingFlags.InvokeMethod | BindingFlags.Static |
+                            BindingFlags.Public | BindingFlags.NonPublic,
+                            null, null, null);
+                    }
+                }
+                catch (Exception e)
+                {
+                    Trace.WriteLine(String.Format("Exception occured in example {0}: {1}",
+                        type, e.ToString()));
+                }
+
+                dbg.Flush();
+                dbg.Close();
+            }
+        }
+
+        [STAThread]
+        public static void Main(string[] args)
+        {
+            if (args.Length > 0)
+            {
+                LaunchExample(args[0]);
+            }
+            else
+            {
+                try
+                {
+                    Application.EnableVisualStyles();
+                    Application.SetCompatibleTextRenderingDefault(false);
+
+                    using (Form browser = new ExampleBrowser())
+                    {
+                        Application.Run(browser);
+                    }
+                }
+                catch (System.Security.SecurityException e)
+                {
+                    MessageBox.Show("The Example Launcher failed to start, due to insufficient permissions. This may happen if you execute the application from a network share.", "OpenTK Example Launcher failed to start.",
+                                    MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    Trace.WriteLine(e.ToString());
+                }
             }
         }
     }
